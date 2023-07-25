@@ -10,7 +10,6 @@ export class UsersService {
   async findAll(): Promise<Users[]> {
     try {
       const allUsers = await this.serviceUsers.findAll();
-
       return allUsers;
     } catch (error) {
       throw new HttpException('Error al intentar buscar los usuarios', 404);
