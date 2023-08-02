@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Inject, Injectable, HttpException } from '@nestjs/common';
 import { Users } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -27,6 +29,32 @@ export class UsersService {
       if (!created) {
         throw new HttpException('El email ya esta en uso.', 400);
       } else return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateUser(userId: number, body: UpdateUserDto): Promise<Users> {
+    try {
+      const user = await this.serviceUsers.findByPk(userId);
+      if (!user) {
+        throw new HttpException('Usuario no encontrado.', 404);
+      }
+      await user.update({ ...body });
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteUser(userId: number): Promise<Users> {
+    try {
+      const user = await this.serviceUsers.findByPk(userId);
+      if (!user) {
+        throw new HttpException('Usuario no encontrado.', 404);
+      }
+      await user.destroy();
+      return user;
     } catch (error) {
       throw error;
     }

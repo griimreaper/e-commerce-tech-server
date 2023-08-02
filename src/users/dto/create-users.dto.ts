@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export class CreateUserDto {
   id: string;
   name: string;
@@ -11,5 +12,4 @@ export class CreateUserDto {
   dni?: number;
   isAdmin: boolean;
   isActive: boolean;
-  confirmationCode?: string;
 }
