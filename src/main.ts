@@ -9,7 +9,7 @@ async function bootstrap() {
   dotenv.config();
   app.use(morgan('dev'));
 
-  await app.listen(3000);
+  await app.listen(process.env.SERVER_PORT ?? 3001);
   console.log(`Application running on: ${process.env.SERVER_PORT ?? 3001}`);
 }
 bootstrap();

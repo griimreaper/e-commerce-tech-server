@@ -1,4 +1,15 @@
 export class CreateUserDto {
-  id: number;
-  firstName: string;
+  id: string;
+  name: string;
+  lastname: string;
+  username: string;
+  password: string;
+  img?: string;
+  email: string;
+  address?: string;
+  tel?: number;
+  dni?: number;
+  isAdmin: boolean;
+  isActive: boolean;
+  confirmationCode?: string;
 }

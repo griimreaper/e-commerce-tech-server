@@ -9,5 +9,37 @@ export class Users extends Model {
   id: string;
 
   @Column
-  firstName: string;
+  name: string;
+
+  @Column
+  lastname: string;
+
+  @Column
+  username: string;
+
+  @Column
+  password: string;
+
+  @Column
+  img: string;
+
+  @Column({
+    unique: true,
+  })
+  email: string;
+
+  @Column
+  address: string;
+
+  @Column
+  tel: number;
+
+  @Column
+  dni: number;
+
+  @Column
+  isAdmin: boolean;
+
+  @Column
+  isActive: boolean;
 }
