@@ -3,21 +3,13 @@ import { Inject, Injectable, HttpException } from '@nestjs/common';
 import { Users } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+
 @Injectable()
 export class UsersService {
   constructor(
     @Inject('USERS_REPOSITORY')
     private serviceUsers: typeof Users,
   ) {}
-
-  async findAll(): Promise<Users[]> {
-    try {
-      const allUsers = await this.serviceUsers.findAll();
-      return allUsers;
-    } catch (error) {
-      throw new HttpException('Error to try find users', 404);
-    }
-  }
 
   async createUser(body: CreateUserDto): Promise<Users> {
     try {
@@ -31,6 +23,27 @@ export class UsersService {
       } else return user;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async findAll(): Promise<Users[]> {
+    try {
+      const allUsers = await this.serviceUsers.findAll();
+      return allUsers;
+    } catch (error) {
+      throw new HttpException('Error to try find users', 404);
+    }
+  }
+
+  async findOne(id: number): Promise<Users> {
+    try {
+      const product = await this.serviceUsers.findByPk(id);
+      if (!product) {
+        throw new HttpException('User not found', 404);
+      }
+      return product;
+    } catch (error) {
+      throw new HttpException('Error finding the user', 404);
     }
   }
 

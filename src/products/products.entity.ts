@@ -9,25 +9,25 @@ export class Products extends Model {
   })
   id: string;
 
-  @Column({allowNull:false,})
+  @Column({ allowNull: false })
   name: string;
 
-  @Column({allowNull:false,})
+  @Column({ allowNull: false })
   description: string;
 
   @Column({
     type: DataType.FLOAT,
-    allowNull:false,
-})
+    allowNull: false,
+  })
   price: number;
 
-  @Column({allowNull:false,})
+  @Column({ allowNull: false })
   quantity: number;
 
   @Column
   imageUrl: string;
 
-  @Column({allowNull:false,})
+  @Column({ allowNull: false })
   category: string;
 
   @Column
