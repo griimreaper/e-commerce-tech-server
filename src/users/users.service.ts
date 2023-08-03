@@ -2,7 +2,8 @@
 import { Inject, Injectable, HttpException } from '@nestjs/common';
 import { Users } from './users.entity';
 import { CreateUserDto } from './dto/create-users.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { hash } from 'bcrypt';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -20,41 +21,67 @@ export class UsersService {
   }
 
   async createUser(body: CreateUserDto): Promise<Users> {
+    const { password } = body;
+    const hashedPassword = await hash(password, 10);
+    
     try {
       const { email } = body;
       const [user, created] = await this.serviceUsers.findOrCreate({
         where: { email },
-        defaults: { ...body },
+        defaults: { ...body, password: hashedPassword, isActive: true, rol: 'user'},
       });
       if (!created) {
-        throw new HttpException('El email ya esta en uso.', 400);
+        throw new HttpException('This email has already in use.', 400);
       } else return user;
     } catch (error) {
       throw error;
     }
   }
 
-  async updateUser(userId: number, body: UpdateUserDto): Promise<Users> {
+  async updateUser(userId: string, body: CreateUserDto, img?: any): Promise<Users> {
+    const { name, password, lastname, username, address } = body // se realiza un destructuring para editar solo el dato que se modifico
+    console.log(body)
     try {
       const user = await this.serviceUsers.findByPk(userId);
       if (!user) {
-        throw new HttpException('Usuario no encontrado.', 404);
+        throw new HttpException('User not find.', 404);
+      } else {
+        if (name) user.name = name;
+        if (lastname) user.lastname = lastname;
+        if (password) {
+          const hashedPassword = await hash(password, 10);
+          user.password = hashedPassword;
+        }
+        if (username) user.username = username;
+        if (address) user.address = address;
+        if (img) user.img = img;
+        await user.save();
+        return user;
       }
-      await user.update({ ...body });
-      return user;
     } catch (error) {
       throw error;
     }
   }
 
-  async deleteUser(userId: number): Promise<Users> {
+  async deleteUser(userId: string): Promise<string> {
+    let resultado = '';
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < 10; i++) {
+      const indice = Math.floor(Math.random() * caracteres.length);
+      resultado += caracteres.charAt(indice); // se genera un string aleatorio
+    }
+
     try {
       const user = await this.serviceUsers.findByPk(userId);
       if (!user) {
-        throw new HttpException('Usuario no encontrado.', 404);
+        throw new HttpException('User not find.', 404);
+      } else {
+        user.isActive = false;
+        user.email = `Deleted_${user.email}_${resultado}`; //  se cambia el valor de email para que el usuario pueda volver a registrarse
+        await user.save();
+        return 'User eliminated';
       }
-      await user.destroy();
-      return user;
     } catch (error) {
       throw error;
     }

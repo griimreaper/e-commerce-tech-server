@@ -1,15 +1,19 @@
-/* eslint-disable prettier/prettier */
+
+export enum userRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}
+
 export class CreateUserDto {
-  id: string;
+  id?: string;
   name: string;
   lastname: string;
   username: string;
   password: string;
-  img?: string;
+  img?: string | string[];
   email: string;
   address?: string;
   tel?: number;
-  dni?: number;
-  isAdmin: boolean;
+  rol?: userRole;
   isActive: boolean;
 }

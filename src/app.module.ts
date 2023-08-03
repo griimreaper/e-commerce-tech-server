@@ -5,6 +5,9 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
+import { FileModule } from './file/file.module';
+import { MulterModule } from '@nestjs/platform-express'
+import { multerConfig } from './file/multer.config';
 
 @Module({
   imports: [
@@ -12,9 +15,11 @@ import { ProductsModule } from './products/products.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
+    MulterModule.register(multerConfig),
     DatabaseModule,
     UsersModule,
     ProductsModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
