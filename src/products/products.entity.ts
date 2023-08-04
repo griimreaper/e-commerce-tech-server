@@ -24,8 +24,12 @@ export class Products extends Model {
   @Column({ allowNull: false })
   quantity: number;
 
-  @Column
-  imageUrl: string;
+  @Column(
+    {
+      type: DataType.ARRAY(DataType.STRING),
+    },
+  )
+    img: string[];
 
   @Column({ allowNull: false })
   category: string;
