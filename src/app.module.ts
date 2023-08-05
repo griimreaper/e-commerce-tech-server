@@ -9,6 +9,7 @@ import { ProductsModule } from './products/products.module';
 import { FileModule } from './file/file.module';
 import { MulterModule } from '@nestjs/platform-express'
 import { multerConfig } from './file/multer.config';
+import { BuysModule } from './buys/buys.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { multerConfig } from './file/multer.config';
     UsersModule,
     ProductsModule,
     FileModule,
+    BuysModule,
   ],
   controllers: [AppController],
   providers: [AppService],

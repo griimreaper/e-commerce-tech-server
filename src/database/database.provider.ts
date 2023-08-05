@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
+import { Buys } from 'src/buys/buys.entity';
 import { Products } from 'src/products/products.entity';
 import { Users } from 'src/users/users.entity';
 
@@ -17,7 +18,11 @@ export const databaseProviders = [
         logging: false,
         native: false,
       });
-      sequelize.addModels([Users, Products]);
+      sequelize.addModels([
+        Users,
+        Products,
+        Buys
+      ]);
       try {
         await sequelize.sync({ force: true });
       } catch (error) {
