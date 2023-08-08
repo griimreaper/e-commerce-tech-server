@@ -23,7 +23,10 @@ export class Buys extends Model {
     id: number;
 
     @Column
-    productName:string;
+    productBrand:string;
+
+    @Column
+    productModel:string;
 
     @Column
     buyerUsername:string
@@ -38,10 +41,10 @@ export class Buys extends Model {
     id_user: string;
 
     @BelongsTo(() => Users)
-    userDonation: string;
+    User: string;
 
     @BelongsTo(() => Products)
-    asociacion: Products;
+    Product: Products;
 
     @Column({ type: 'float' }) // Agregar atributo floatAttribute de tipo float
     mount: number;

@@ -19,26 +19,26 @@ export class BuysService {
     async buyProduct({id_product, id_user}:BuysDto): Promise<BuysDto> {
         try {
             const userData = await this.usersRepository.findByPk(id_user)
-            const productData = await this.productsRepository.findByPk(id_product)
+            const shoesData = await this.productsRepository.findByPk(id_product)
 
-            if (!Boolean(productData.quantity)) throw new HttpException('No stock.', 401)
+            if (!shoesData.isActive) throw new HttpException('NO STOCK', 400)
 
-            productData.quantity--
-            productData.save()
+            shoesData.isActive = false
+            shoesData.save();
 
             return await this.buysRepository.create({
                 id_user: userData.id,
                 buyerUsername: userData.username,
                 buyerEmail: userData.email,
-                id_product: productData.id,
-                productName: productData.name,
-                mount: productData.price,
+                id_product: shoesData.id,
+                productBrand: shoesData.brand,
+                productModel: shoesData.model,
+                mount: shoesData.price,
             })
 
 
         } catch (error) {
             throw new HttpException(error.message, error.status)
-            
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFiles, UseInterceptors, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateProductDto } from './dto/create-products.dto';
@@ -13,8 +13,8 @@ export class ProductsController {
     ) {}
 
   @Get()
-  getAllProducts() {
-    return this.productsService.findAll();
+  getAllProducts(@Query('page') page: string, @Query('quantity') quantity: string) {
+    return this.productsService.findAll(Number(page), Number(quantity));
   }
 
   @Post()

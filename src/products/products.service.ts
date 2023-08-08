@@ -2,6 +2,13 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { Products } from './products.entity';
 import { CreateProductDto } from './dto/create-products.dto';
 
+export interface Paginate {
+  page?: number;
+  prevPage?:number;
+  nextPage?:number;
+  content: Products[];
+}
+
 @Injectable()
 export class ProductsService {
   constructor(
@@ -11,14 +18,7 @@ export class ProductsService {
 
   async createProduct(body: CreateProductDto): Promise<Products> {
     try {
-      const { name } = body;
-      const existingProduct = await this.serviceProducts.findOne({
-        where: { name },
-      });
-
-      if (existingProduct) {
-        throw new HttpException('El nombre ya está en uso', 400);
-      }
+      const { model } = body;
 
       const newProduct = await this.serviceProducts.create({ ...body, isActive: true });
       return newProduct;
@@ -27,10 +27,16 @@ export class ProductsService {
     }
   }
 
-  async findAll(): Promise<Products[]> {
+  async findAll(page: number, quantity: number= 12): Promise<Paginate> {
     try {
       const allProducts = await this.serviceProducts.findAll();
-      return allProducts;
+      const quantityOfPages = Math.floor(allProducts.length/quantity)
+      return {
+        page,
+        prevPage: page === 0 ? null : page -1,
+        nextPage: page === quantityOfPages -1 ? null : page+1,
+        content: allProducts.slice(page*quantity, (page+1)*quantity)
+      };
     } catch (error) {
       throw new HttpException('Error finding products', 404);
     }
@@ -55,11 +61,11 @@ export class ProductsService {
         throw new HttpException('Product not found', 404);
       }
 
-      const { name } = productData;
+      const { model } = productData;
 
-      if (name && name !== product.name) {
+      if (model && model !== product.model) {
         const existingProduct = await this.serviceProducts.findOne({
-          where: { name },
+          where: { model },
         });
 
         if (existingProduct) {
@@ -67,12 +73,12 @@ export class ProductsService {
         }
       }
 
-      product.name = name || product.name;
+      product.model = model || product.model;
       product.description = productData.description || product.description;
       product.price = productData.price || product.price;
-      product.quantity = productData.quantity || product.quantity;
+      product.size = productData.size || product.size;
       product.img = img || product.img;
-      product.category = productData.category || product.category;
+      product.brand = productData.brand || product.brand;
 
       await product.save();
       return product;
@@ -97,7 +103,7 @@ export class ProductsService {
       }
 
       product.isActive = false;
-      product.name = `Deleted_${product.name}_${resultado}`;
+      product.model = `Deleted_${product.model}_${resultado}`;
       await product.save();
       return 'Product eliminated';
     } catch (error) {

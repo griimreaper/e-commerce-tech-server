@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Column, Model, Table, DataType } from 'sequelize-typescript';
-@Table({ tableName: 'products', timestamps: true })
+@Table({ tableName: 'shoes', timestamps: true })
 export class Products extends Model {
   @Column({
     type: DataType.UUID,
@@ -10,7 +10,10 @@ export class Products extends Model {
   id: string;
 
   @Column({ allowNull: false })
-  name: string;
+  brand: string;
+
+  @Column({ allowNull: false })
+  model: string;
 
   @Column({ allowNull: false })
   description: string;
@@ -21,8 +24,11 @@ export class Products extends Model {
   })
   price: number;
 
-  @Column({ allowNull: false })
-  quantity: number;
+  @Column({
+    allowNull: false,
+    type: DataType.FLOAT
+  })
+  size: number;
 
   @Column(
     {
@@ -30,9 +36,6 @@ export class Products extends Model {
     },
   )
     img: string[];
-
-  @Column({ allowNull: false })
-  category: string;
 
   @Column
   isActive: boolean;

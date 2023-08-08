@@ -1,10 +1,10 @@
 export class CreateProductDto {
   id?: string;
-  name: string;
+  brand: string;
+  model: string;
   description: string;
   price: number;
-  quantity: number;
+  size: number;
   img: string | string[];
-  category: string;
   isActive: boolean;
 }
