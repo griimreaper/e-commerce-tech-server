@@ -48,4 +48,17 @@ export class ProductsController {
   deleteUser(@Param('id') id:string) {
     return this.productsService.deleteProduct(id);
   }
+
+  @Get('filter')
+  filterBy(
+    @Query('brand') brand?: string,
+    @Query('model') model?: string,
+    @Query('color') color?: string,
+    @Query('size') size?: string,
+    @Query('page') page?: string,
+    @Query('quantity') quantity?: string
+    ) {
+      const body = {brand, model, color, size: Number(size)}
+    return this.productsService.filterBy(body, Number(page), Number(quantity))
+  }
 }

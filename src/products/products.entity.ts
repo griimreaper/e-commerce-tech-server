@@ -30,6 +30,9 @@ export class Products extends Model {
   })
   size: number;
 
+  @Column
+  color: string;
+
   @Column(
     {
       type: DataType.ARRAY(DataType.STRING),

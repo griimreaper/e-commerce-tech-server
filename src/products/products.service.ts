@@ -4,8 +4,8 @@ import { CreateProductDto } from './dto/create-products.dto';
 
 export interface Paginate {
   page?: number;
-  prevPage?:number;
-  nextPage?:number;
+  prevPage?: number;
+  nextPage?: number;
   content: Products[];
 }
 
@@ -27,18 +27,21 @@ export class ProductsService {
     }
   }
 
-  async findAll(page: number, quantity: number= 12): Promise<Paginate> {
+  async findAll(page: number, quantity: number = 12): Promise<Paginate> {
     try {
       const allProducts = await this.serviceProducts.findAll();
-      const quantityOfPages = Math.floor(allProducts.length/quantity)
+      const quantityOfPages = Math.floor(allProducts.length / quantity)
+
+      if (page < 0 || page > quantityOfPages) { throw new HttpException('This page not exist.', 400)}
+
       return {
+        prevPage: page === 0 ? null : page - 1,
         page,
-        prevPage: page === 0 ? null : page -1,
-        nextPage: page === quantityOfPages -1 ? null : page+1,
-        content: allProducts.slice(page*quantity, (page+1)*quantity)
+        nextPage: page === quantityOfPages ? null : page + 1,
+        content: allProducts.slice(page * quantity, (page + 1) * quantity)
       };
     } catch (error) {
-      throw new HttpException('Error finding products', 404);
+      throw new HttpException(error.message, 404);
     }
   }
 
@@ -110,4 +113,47 @@ export class ProductsService {
       throw new HttpException('Error deleting product', 500);
     }
   }
+
+  async filterBy(body: CreateProductDto, page: number, quantity: number): Promise<Paginate> {
+    try {
+      let shoesData = await this.serviceProducts.findAll()
+      const list = []
+
+      for (const key of Object.keys(body)) {
+        const value = body[key]
+        if (value) list.push([key, value]);
+      }
+
+      const returned = (filters, dataFiltered = []) => {
+        if (filters.length) {
+          const [key, value] = filters.pop()
+
+          dataFiltered = dataFiltered.filter((a) => {
+            if (typeof value === 'string') return a[key].toLowerCase() === value.toLowerCase()
+            return a[key] === value
+          })
+
+          return returned(filters, dataFiltered)
+        } else {
+          return dataFiltered
+        }
+      }
+
+      const productsFiltered = returned(list, shoesData)
+      const quantityOfPages = Math.floor(productsFiltered.length / quantity)
+      
+      if (page < 0 || page > quantityOfPages) { throw new HttpException('This page not exist.', 400)}
+
+      return {
+        prevPage: page === 0 ? null : page - 1,
+        page,
+        nextPage: page === quantityOfPages ? null : page + 1,
+        content: productsFiltered.slice(page * quantity, (page + 1) * quantity)
+      }
+
+    } catch (error) {
+      throw new HttpException(error.message, error.status)
+    }
+  }
+
 }
