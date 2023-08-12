@@ -46,13 +46,19 @@ export class ProductsService {
     }
   }
 
-  async findOne(id: number): Promise<Products> {
+  async findOne(id: string): Promise<any> {
     try {
       const product = await this.serviceProducts.findByPk(id);
+      let sold: Products[] | number = await this.serviceProducts.findAll({ where: { isActive: false, model: product.model } })
+      sold = Object.keys(sold).length
+
       if (!product) {
         throw new HttpException('Product not found', 404);
       }
-      return product;
+      return {
+        ...product.dataValues,
+        sold,
+      };
     } catch (error) {
       throw new HttpException('Error finding the product', 404);
     }
@@ -87,7 +93,7 @@ export class ProductsService {
       await product.save();
       return product;
     } catch (error) {
-      throw new HttpException('Error updating product', 500);
+      throw new HttpException(error.message, 500);
     }
   }
 

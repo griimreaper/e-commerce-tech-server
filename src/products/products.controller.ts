@@ -10,14 +10,21 @@ export class ProductsController {
   constructor(
     private productsService: ProductsService,
     private readonly fileService: FileService,
-    ) {}
+  ) { }
 
-  @Get()
+  @Get('detail/:id')
+  async getOneProduct(
+    @Param('id') id: string,
+  ) {
+    console.log(id)
+    return this.productsService.findOne(id)
+  }
+  @Get('get/')
   getAllProducts(
     @Query('page') page: string,
     @Query('quantity') quantity: string,
     @Query('search') search: string,
-    ) {
+  ) {
     return this.productsService.findAll(Number(page), Number(quantity), search);
   }
 
@@ -29,7 +36,7 @@ export class ProductsController {
   ) {
     if (img) {
       const url = await this.fileService.createFiles(img);
-      body = { ...body, img:url };
+      body = { ...body, img: url };
     }
     return this.productsService.createProduct(body);
   }
@@ -41,7 +48,8 @@ export class ProductsController {
     @Param('id') id: string,
     @UploadedFiles() img?: any,
   ) {
-    if (img) {
+
+    if (img.length) {
       const url = await this.fileService.createFiles(img);
       return this.productsService.updateProduct(id, body, url);
     }
@@ -49,7 +57,8 @@ export class ProductsController {
   }
 
   @Delete('delete/:id')
-  deleteUser(@Param('id') id:string) {
+  deleteUser(@Param('id') id: string) {
+    console.log('hola')
     return this.productsService.deleteProduct(id);
   }
 
@@ -61,8 +70,8 @@ export class ProductsController {
     @Query('size') size?: string,
     @Query('page') page?: string,
     @Query('quantity') quantity?: string
-    ) {
-      const body = {brand, model, color, size: Number(size)}
+  ) {
+    const body = { brand, model, color, size: Number(size) }
     return this.productsService.filterBy(body, Number(page), Number(quantity))
   }
 }
