@@ -27,12 +27,13 @@ export class ProductsService {
     }
   }
 
-  async findAll(page: number, quantity: number = 12): Promise<Paginate> {
+  async findAll(page: number, quantity: number = 12, search?: string): Promise<Paginate> {
     try {
-      const allProducts = await this.serviceProducts.findAll();
+      let allProducts = await this.serviceProducts.findAll();
       const quantityOfPages = Math.floor(allProducts.length / quantity)
 
-      if (page < 0 || page > quantityOfPages) { throw new HttpException('This page not exist.', 400)}
+      if (page < 0 || page > quantityOfPages) { throw new HttpException('This page not exist.', 400) }
+      if (search) allProducts = allProducts.filter((s) => (`${s.brand} ${s.model}`).toLowerCase().includes(search.toLowerCase()))
 
       return {
         prevPage: page === 0 ? null : page - 1,
@@ -141,8 +142,8 @@ export class ProductsService {
 
       const productsFiltered = returned(list, shoesData)
       const quantityOfPages = Math.floor(productsFiltered.length / quantity)
-      
-      if (page < 0 || page > quantityOfPages) { throw new HttpException('This page not exist.', 400)}
+
+      if (page < 0 || page > quantityOfPages) { throw new HttpException('This page not exist.', 400) }
 
       return {
         prevPage: page === 0 ? null : page - 1,

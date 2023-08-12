@@ -13,15 +13,19 @@ export class ProductsController {
     ) {}
 
   @Get()
-  getAllProducts(@Query('page') page: string, @Query('quantity') quantity: string) {
-    return this.productsService.findAll(Number(page), Number(quantity));
+  getAllProducts(
+    @Query('page') page: string,
+    @Query('quantity') quantity: string,
+    @Query('search') search: string,
+    ) {
+    return this.productsService.findAll(Number(page), Number(quantity), search);
   }
 
   @Post()
   @UseInterceptors(FilesInterceptor('img', undefined, multerConfig))
   async createProduct(
     @Body() body: CreateProductDto,
-    @UploadedFiles() img?: any, 
+    @UploadedFiles() img?: any,
   ) {
     if (img) {
       const url = await this.fileService.createFiles(img);
