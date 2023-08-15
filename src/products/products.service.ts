@@ -1,6 +1,7 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { Products } from './products.entity';
 import { CreateProductDto } from './dto/create-products.dto';
+import { faker } from '@faker-js/faker'
 
 export interface Paginate {
   page?: number;
@@ -18,8 +19,6 @@ export class ProductsService {
 
   async createProduct(body: CreateProductDto): Promise<Products> {
     try {
-      const { model } = body;
-
       const newProduct = await this.serviceProducts.create({ ...body, isActive: true });
       return newProduct;
     } catch (error) {
@@ -163,4 +162,22 @@ export class ProductsService {
     }
   }
 
+  async generateData(): Promise<Paginate> {
+    const dataShoes = [];
+    for (let i = 0; i < 20; i++) {
+      const Shoes: CreateProductDto = {
+        brand: faker.commerce.productName(),
+        model: faker.commerce.productName(),
+        color: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: 300,
+        img: faker.image.url(),
+        size: 40,
+        isActive: true
+      }
+      dataShoes.push(Shoes)
+    }
+
+    return { content: dataShoes }
+  }
 }

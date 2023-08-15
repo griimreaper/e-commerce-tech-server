@@ -28,6 +28,10 @@ export class ProductsController {
     return this.productsService.findAll(Number(page), Number(quantity), search);
   }
 
+  @Get('/datafake')
+  getFakeData() {
+    return this.productsService.generateData();
+  }
   @Post()
   @UseInterceptors(FilesInterceptor('img', undefined, multerConfig))
   async createProduct(
