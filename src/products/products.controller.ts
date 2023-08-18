@@ -32,6 +32,7 @@ export class ProductsController {
   getFakeData() {
     return this.productsService.generateData();
   }
+  
   @Post()
   @UseInterceptors(FilesInterceptor('img', undefined, multerConfig))
   async createProduct(

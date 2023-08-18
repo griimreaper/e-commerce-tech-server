@@ -11,6 +11,7 @@ import { MulterModule } from '@nestjs/platform-express'
 import { multerConfig } from './file/multer.config';
 import { BuysModule } from './buys/buys.module';
 import { CorsMiddleware } from './constants/cors.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CorsMiddleware } from './constants/cors.middleware';
     ProductsModule,
     FileModule,
     BuysModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

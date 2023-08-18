@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @Inject('USERS_REPOSITORY')
     private serviceUsers: typeof Users,
-  ) {}
+  ) { }
 
   async createUser(body: CreateUserDto): Promise<Users> {
     const { password } = body;
@@ -18,7 +18,7 @@ export class UsersService {
       const { email } = body;
       const [user, created] = await this.serviceUsers.findOrCreate({
         where: { email },
-        defaults: { ...body, password: hashedPassword, isActive: true, rol: 'user'},
+        defaults: { ...body, password: hashedPassword, isActive: true, rol: 'user' },
       });
       if (!created) {
         throw new HttpException('This email has already in use.', 400);
@@ -37,13 +37,13 @@ export class UsersService {
     }
   }
 
-  async findOne(id: number): Promise<Users> {
+  async findOne(email: string): Promise<Users> {
     try {
-      const product = await this.serviceUsers.findByPk(id);
-      if (!product) {
+      const user = await this.serviceUsers.findOne({ where: { email } });
+      if (!user) {
         throw new HttpException('User not found', 404);
       }
-      return product;
+      return user;
     } catch (error) {
       throw new HttpException('Error finding the user', 404);
     }
