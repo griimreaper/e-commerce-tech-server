@@ -1,4 +1,6 @@
 import { Column, Model, Table, DataType } from 'sequelize-typescript';
+import { userRole } from './dto/create-users.dto';
+
 @Table({ tableName: 'users', timestamps: false })
 export class Users extends Model {
   @Column({
@@ -9,5 +11,34 @@ export class Users extends Model {
   id: string;
 
   @Column
-  firstName: string;
+  name: string;
+
+  @Column
+  lastname: string;
+
+  @Column
+  username: string;
+
+  @Column
+  password: string;
+
+  @Column
+  img: string;
+
+  @Column({
+    unique: true,
+  })
+  email: string;
+
+  @Column
+  address: string;
+
+  @Column
+  tel: string;
+
+  @Column
+  rol: userRole;
+
+  @Column
+  isActive: boolean;
 }
